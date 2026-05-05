@@ -65,6 +65,7 @@ export default function Home() {
   const [precheckAnalysis, setPrecheckAnalysis] = useState<CoachPrecheckOutput | null>(null);
   const [postAnalyze, setPostAnalyze] = useState<CoachAnalyzeOutput | null>(null);
   const [history, setHistory] = useState<AttemptRecord[]>([]);
+  const [rightPanelTab, setRightPanelTab] = useState<"trade" | "ai">("trade");
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -121,6 +122,7 @@ export default function Home() {
     setIsLoadingPostAnalyze(false);
     setPrecheckAnalysis(null);
     setPostAnalyze(null);
+    setRightPanelTab("trade");
   }
 
   function buildIndicatorPayload(candles: Candle[]) {
@@ -325,127 +327,164 @@ export default function Home() {
           </div>
 
           <aside className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-            <div>
-              <p className="mb-2 text-sm font-medium text-slate-300">Difficulty</p>
-              <div className="grid grid-cols-3 gap-2">
-                {difficultyOptions.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => {
-                      setDifficulty(d);
-                      createNewScenario(d);
-                    }}
-                    className={`rounded-md border px-3 py-2 text-sm capitalize transition ${
-                      difficulty === d
-                        ? "border-sky-400 bg-sky-500/20 text-sky-100"
-                        : "border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800"
-                    }`}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-300">Pattern tags (filter toggle)</p>
-                <button
-                  onClick={() => {
-                    setSelectedTags([]);
-                    const nextAllowed = getScenariosByTags([]);
-                    setAllowedScenarioTypes(nextAllowed);
-                    createNewScenario(difficulty, nextAllowed);
-                  }}
-                  className="text-xs text-slate-400 underline hover:text-slate-200"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {allPatternTags.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => togglePatternTag(tag)}
-                    className={`rounded-full border px-3 py-1 text-xs uppercase transition ${
-                      selectedTags.includes(tag)
-                        ? "border-cyan-400 bg-cyan-500/20 text-cyan-100"
-                        : "border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-2 text-xs text-slate-500">
-                Active filters: {selectedTags.length || "none"} | Matching scenarios: {allowedScenarioTypes.length}
-              </p>
-            </div>
-
-            <PredictionPanel
-              prediction={prediction}
-              confidence={confidence}
-              isSubmitted={isSubmitted}
-              onPrediction={setPrediction}
-              onConfidence={setConfidence}
-              onSubmit={onSubmitPrediction}
-              onNext={() => createNewScenario()}
-            />
-            {!isSubmitted && (
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-slate-700 bg-slate-900/70 p-1">
               <button
-                onClick={() => runPreRevealCoach()}
-                className="w-full rounded-md border border-indigo-400 bg-indigo-500/15 px-3 py-2 text-sm text-indigo-100 hover:bg-indigo-500/25"
+                onClick={() => setRightPanelTab("trade")}
+                className={`rounded-md px-3 py-2 text-sm transition ${
+                  rightPanelTab === "trade"
+                    ? "bg-sky-500/25 text-sky-100 border border-sky-400"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
               >
-                Coach me before reveal
+                Trade Panel
               </button>
-            )}
+              <button
+                onClick={() => setRightPanelTab("ai")}
+                className={`rounded-md px-3 py-2 text-sm transition ${
+                  rightPanelTab === "ai"
+                    ? "bg-indigo-500/25 text-indigo-100 border border-indigo-400"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+              >
+                AI Coach
+              </button>
+            </div>
 
-            <div className="rounded-lg border border-slate-700 bg-slate-900/70 p-3 text-xs text-slate-300">
-              <p className="mb-2 text-sm font-medium text-slate-200">Reveal playback</p>
-              <div className="grid grid-cols-3 gap-2">
-                {replaySpeedOptions.map((opt) => (
+            {rightPanelTab === "trade" ? (
+              <>
+                <div>
+                  <p className="mb-2 text-sm font-medium text-slate-300">Difficulty</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {difficultyOptions.map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => {
+                          setDifficulty(d);
+                          createNewScenario(d);
+                        }}
+                        className={`rounded-md border px-3 py-2 text-sm capitalize transition ${
+                          difficulty === d
+                            ? "border-sky-400 bg-sky-500/20 text-sky-100"
+                            : "border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800"
+                        }`}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-sm font-medium text-slate-300">Pattern tags (filter toggle)</p>
+                    <button
+                      onClick={() => {
+                        setSelectedTags([]);
+                        const nextAllowed = getScenariosByTags([]);
+                        setAllowedScenarioTypes(nextAllowed);
+                        createNewScenario(difficulty, nextAllowed);
+                      }}
+                      className="text-xs text-slate-400 underline hover:text-slate-200"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {allPatternTags.map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() => togglePatternTag(tag)}
+                        className={`rounded-full border px-3 py-1 text-xs uppercase transition ${
+                          selectedTags.includes(tag)
+                            ? "border-cyan-400 bg-cyan-500/20 text-cyan-100"
+                            : "border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">
+                    Active filters: {selectedTags.length || "none"} | Matching scenarios: {allowedScenarioTypes.length}
+                  </p>
+                </div>
+
+                <PredictionPanel
+                  prediction={prediction}
+                  confidence={confidence}
+                  isSubmitted={isSubmitted}
+                  onPrediction={setPrediction}
+                  onConfidence={setConfidence}
+                  onSubmit={onSubmitPrediction}
+                  onNext={() => createNewScenario()}
+                />
+
+                <div className="rounded-lg border border-slate-700 bg-slate-900/70 p-3 text-xs text-slate-300">
+                  <p className="mb-2 text-sm font-medium text-slate-200">Reveal playback</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {replaySpeedOptions.map((opt) => (
+                      <button
+                        key={opt.label}
+                        onClick={() => setRevealSpeedMs(opt.ms)}
+                        className={`rounded-md border px-2 py-1 transition ${
+                          revealSpeedMs === opt.ms
+                            ? "border-fuchsia-400 bg-fuchsia-500/20 text-fuchsia-100"
+                            : "border-slate-700 bg-slate-900 hover:bg-slate-800"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setIsPlaybackPaused((v) => !v)}
+                      disabled={!isSubmitted}
+                      className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 disabled:opacity-45"
+                    >
+                      {isPlaybackPaused ? "Resume" : "Pause"}
+                    </button>
+                    <button
+                      onClick={() => setDisplayedFutureCount(scenario.candlesAfter.length)}
+                      disabled={!isSubmitted}
+                      className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 disabled:opacity-45"
+                    >
+                      Reveal all
+                    </button>
+                  </div>
                   <button
-                    key={opt.label}
-                    onClick={() => setRevealSpeedMs(opt.ms)}
-                    className={`rounded-md border px-2 py-1 transition ${
-                      revealSpeedMs === opt.ms
-                        ? "border-fuchsia-400 bg-fuchsia-500/20 text-fuchsia-100"
+                    onClick={() => setShowTrendLines((v) => !v)}
+                    className={`mt-2 w-full rounded-md border px-2 py-1 transition ${
+                      showTrendLines
+                        ? "border-emerald-400 bg-emerald-500/15 text-emerald-100"
                         : "border-slate-700 bg-slate-900 hover:bg-slate-800"
                     }`}
                   >
-                    {opt.label}
+                    Trend lines: {showTrendLines ? "On" : "Off"}
                   </button>
-                ))}
-              </div>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setIsPlaybackPaused((v) => !v)}
-                  disabled={!isSubmitted}
-                  className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 disabled:opacity-45"
-                >
-                  {isPlaybackPaused ? "Resume" : "Pause"}
-                </button>
-                <button
-                  onClick={() => setDisplayedFutureCount(scenario.candlesAfter.length)}
-                  disabled={!isSubmitted}
-                  className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 disabled:opacity-45"
-                >
-                  Reveal all
-                </button>
-              </div>
-              <button
-                onClick={() => setShowTrendLines((v) => !v)}
-                className={`mt-2 w-full rounded-md border px-2 py-1 transition ${
-                  showTrendLines
-                    ? "border-emerald-400 bg-emerald-500/15 text-emerald-100"
-                    : "border-slate-700 bg-slate-900 hover:bg-slate-800"
-                }`}
-              >
-                Trend lines: {showTrendLines ? "On" : "Off"}
-              </button>
-            </div>
+                </div>
 
-            <StatsPanel stats={stats || defaultStats} />
+                <StatsPanel stats={stats || defaultStats} />
+              </>
+            ) : (
+              <div className="space-y-3">
+                {!isSubmitted && (
+                  <button
+                    onClick={() => runPreRevealCoach()}
+                    className="w-full rounded-md border border-indigo-400 bg-indigo-500/15 px-3 py-2 text-sm text-indigo-100 hover:bg-indigo-500/25"
+                  >
+                    Coach me before reveal
+                  </button>
+                )}
+                <AICoachPanel
+                  precheck={precheckAnalysis}
+                  postAnalyze={postAnalyze}
+                  isLoadingPrecheck={isLoadingPrecheck}
+                  isLoadingPostAnalyze={isLoadingPostAnalyze}
+                  isSubmitted={isSubmitted}
+                />
+              </div>
+            )}
           </aside>
         </section>
 
@@ -460,13 +499,6 @@ export default function Home() {
             keyLessons={keyLessons}
           />
         )}
-        <AICoachPanel
-          precheck={precheckAnalysis}
-          postAnalyze={postAnalyze}
-          isLoadingPrecheck={isLoadingPrecheck}
-          isLoadingPostAnalyze={isLoadingPostAnalyze}
-          isSubmitted={isSubmitted}
-        />
         <p className="text-center text-xs text-slate-500">Simulated training tool. Not financial advice.</p>
       </div>
     </div>
