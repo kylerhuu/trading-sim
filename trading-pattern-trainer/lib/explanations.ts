@@ -1,17 +1,20 @@
 import { Direction, ExplanationData, ScenarioType } from "./types";
 
 const scenarioLabels: Record<ScenarioType, string> = {
-  "uptrend-continuation": "Uptrend continuation",
-  "downtrend-continuation": "Downtrend continuation",
-  "range-consolidation": "Range / consolidation",
-  breakout: "Breakout",
-  "fake-breakout": "Fake breakout",
-  "liquidity-grab-stop-hunt": "Liquidity grab / stop hunt",
-  "reversal-after-sweep": "Reversal after sweep",
-  "higher-low-lower-high": "Higher low / lower high structure",
-  "support-resistance-bounce": "Support / resistance bounce",
-  "trendline-break": "Trendline break",
-  "bull-trap-bear-trap": "Bull trap / bear trap",
+  "trend-continuation-after-pullback": "Trend continuation after pullback",
+  "reversal-after-liquidity-sweep": "Reversal after liquidity sweep",
+  "breakout-retest": "Breakout and retest",
+  "failed-breakout-trap": "Failed breakout trap",
+  "range-accumulation": "Range accumulation",
+  "range-distribution": "Range distribution",
+  "compression-expansion": "Compression before expansion",
+  "news-liquidation-candle": "News-style liquidation candle",
+  "long-squeeze": "Long squeeze",
+  "short-squeeze": "Short squeeze",
+  "choppy-low-confidence-fake-setup": "Choppy low-confidence fake setup",
+  "fair-value-gap-imbalance": "Fair value gap / imbalance",
+  "break-of-structure": "Break of structure",
+  "change-of-character": "Change of character",
 };
 
 const directionLabel: Record<Direction, string> = {

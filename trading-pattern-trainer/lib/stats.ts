@@ -1,4 +1,4 @@
-import { AttemptRecord, Confidence, TrainerStats } from "./types";
+import { AttemptRecord, Confidence, TrainerStats, defaultStats } from "./trading/types";
 
 const STORAGE_KEY = "trading-pattern-trainer-attempts-v1";
 
@@ -22,7 +22,7 @@ function buildConfidenceStats(records: AttemptRecord[]): TrainerStats["confidenc
   );
 }
 
-export function computeStats(records: AttemptRecord[]): TrainerStats {
+function computeStats(records: AttemptRecord[]): TrainerStats {
   const totalAttempts = records.length;
   const correctAnswers = records.filter((r) => r.wasCorrect).length;
   const accuracyPct = totalAttempts ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
@@ -54,7 +54,7 @@ export function computeStats(records: AttemptRecord[]): TrainerStats {
   };
 }
 
-export function loadAttemptHistory(): AttemptRecord[] {
+export function loadStats(): AttemptRecord[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -66,7 +66,12 @@ export function loadAttemptHistory(): AttemptRecord[] {
   }
 }
 
-export function saveAttemptHistory(records: AttemptRecord[]): void {
+export function saveStats(records: AttemptRecord[]): void {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+export function updateStats(records: AttemptRecord[]): TrainerStats {
+  if (!records.length) return defaultStats;
+  return computeStats(records);
 }

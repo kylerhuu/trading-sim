@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trading Pattern Trainer
 
-## Getting Started
+Interactive chart-reading practice app built with Next.js, React, TypeScript, TailwindCSS, and `lightweight-charts`.
 
-First, run the development server:
+## Features
+
+- Randomized candlestick scenarios (40-80 setup candles + 10-20 outcome candles)
+- Scenario families: trend continuation, breakouts, fakeouts, liquidity sweeps, reversals, traps
+- Prediction flow: up / down / sideways with confidence
+- Animated reveal playback with speed controls, pause/resume, and reveal-all
+- Pattern tag filters with toggles
+- Coach-style post-trade explanation and key lessons
+- Local stats persistence with streak and confidence-vs-accuracy tracking
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Optional AI Coach (OpenAI)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env.local`:
 
-## Learn More
+```bash
+OPENAI_API_KEY=your_key_here
+```
 
-To learn more about Next.js, take a look at the following resources:
+If the API call fails or key is missing, the app automatically uses a local fallback explanation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production Validation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run lint
+npm run build
+```
 
-## Deploy on Vercel
+## Simple Vercel Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this folder to a Git repository (GitHub/GitLab/Bitbucket).
+2. In Vercel, click **Add New Project** and import the repo.
+3. Framework preset: **Next.js** (auto-detected).
+4. Build settings:
+   - Build command: `npm run build`
+   - Output: default (`.next`)
+5. Deploy.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Optional env var for AI explanations:
+
+- `OPENAI_API_KEY`
